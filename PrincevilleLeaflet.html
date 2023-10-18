@@ -15,7 +15,9 @@
 </head>
 <body>
 <div id="map"></div>
-
+<script>src="https://cartocollective.blob.core.windows.net/princeville/Vectors/testparcels.js"</script>
+<script>src="https://cartocollective.blob.core.windows.net/princeville/Vectors/ClippedElevation.js"</script>
+<script src="https://cartocollective.blob.core.windows.net/princeville/Vectors/ClippedStreams.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
@@ -26,13 +28,13 @@
         [35.84211, -77.62514], // Southwest
         [35.96579, -77.46587]  // Northeast
     ],
-    minZoom: 8 // Set the minimum zoom level to 3
+    minZoom: 8 
 }).setView([35.89103183195343, -77.53371477127077], 15);
     var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
-
+  
     // Define the tile layers with the provided URLs
     var tile1957 = L.tileLayer('https://cartocollective.blob.core.windows.net/princeville/Arerial%20Photography/1957/AP1957/{z}/{x}/{y}.png', {
         maxZoom: 20,
@@ -72,22 +74,44 @@ attribution: '2013 Princeville'
     // Define the Topo layers
 
     var tile1903 = L.tileLayer('https://cartocollective.blob.core.windows.net/princeville/Topo%20Maps/1903/Topo1903/{z}/{x}/{y}.png', {
-        maxZoom: 15,
+        maxZoom: 20,
         maxNativeZoom: 13,
         attribution: '1903 Topo Map'
     });
 
     var tile1953 = L.tileLayer('https://cartocollective.blob.core.windows.net/princeville/Topo%20Maps/1953/Topo1953/{z}/{x}/{y}.png', {
-        maxZoom: 15,
+        maxZoom: 20,
         maxNativeZoom: 13,
         attribution: '1953 Topo Map'
     });
 
     var tile1983 = L.tileLayer('https://cartocollective.blob.core.windows.net/princeville/Topo%20Maps/1983/Topo1983/{z}/{x}/{y}.png', {
-        maxZoom: 15,
+        maxZoom: 20,
         maxNativeZoom: 13,
         attribution: '1983 Topo Map'
     });
+    var elevationLayer = L.geoJSON(elevation, {
+        style: {
+            color: 'blue', 
+            weight: 2,
+            opacity: 1
+        },
+    })
+    var streamsLayer = L.geoJSON(streams, {
+        style: {
+            color: 'blue', // Change the color as desired
+            weight: 2,
+            opacity: 1
+        },
+      
+    });
+    var parcelsLayer = L.geoJSON(parcels, {
+        style: {
+            color: 'blue', 
+          
+        },
+    })
+    
 
     // Create an object with the tile layers
     var baseLayers = {
@@ -96,19 +120,21 @@ attribution: '2013 Princeville'
         "1999 Aerial Photography": tile1999,
         "2002 Aerial Photography": tile2002,
         "2008 Aerial Photography": tile2008,
-        "2013 Aerial Photography": tile2013
-    };
-
-    // Create an object with the topo layers
-    var baseLayersTopo = {
+        "2013 Aerial Photography": tile2013,
         "1903 Topo Map": tile1903,
         "1953 Topo Map": tile1953,
-        "1983 Topo Map": tile1983
+        "1983 Topo Map": tile1983,
+        "Elevation": elevationLayer,
+        "Streams and Rivers": streamsLayer,
+        "Property Parcels": parcelsLayer
     };
 
+   
+
+
     // Add the layer control to the map (including both sets of layers)
-    var combinedLayers = { ...baseLayers, ...baseLayersTopo };
-    L.control.layers(combinedLayers).addTo(map);
+    L.control.layers(baseLayers).addTo(map);
+
 
     // Add a default layer to the map (1957 Aerial Photography)
     tile1957.addTo(map);
@@ -123,13 +149,14 @@ attribution: '2013 Princeville'
 
     // Listen for changes in the layer controls
     map.on('overlayadd', function (e) {
-        handleLayerSelection(e.layer, [baseLayers, baseLayersTopo]);
+        handleLayerSelection(e.layer, [baseLayers]);
     });
 
     map.on('baselayerchange', function (e) {
-        handleLayerSelection(e.layer, [baseLayers, baseLayersTopo]);
-    });
+        handleLayerSelection(e.layer, [baseLayers ]);
 
+    });
+ 
 </script>
 </body>
 </html>
