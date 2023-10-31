@@ -23,15 +23,18 @@
         crossorigin=""></script>
 
 <script>
+   
+    // Create the variable named map 
     var map = L.map('map', {
     maxBounds: [
         [35.84211, -77.62514], // Southwest
         [35.96579, -77.46587]  // Northeast
     ],
-    minZoom: 8 
+    minZoom: 8 // zoom so that the user does not see the entire world or state
 }).setView([35.89103183195343, -77.53371477127077], 15);
     var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
+        maxZoom: 20,
+        maxNativeZoom: 18,
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
   
@@ -42,57 +45,57 @@
         attribution: '1957 Princeville'
     });
     var tile1977 = L.tileLayer('https://cartocollective.blob.core.windows.net/princeville/Arerial%20Photography/1977/AP1977/{z}/{x}/{y}.png', {
-maxZoom: 20,
-maxNativeZoom: 18,
-attribution: '1977 Princeville'
-});
+        maxZoom: 20,
+        maxNativeZoom: 18,
+        attribution: '1977 Princeville'
+        });
 
 var tile1999 = L.tileLayer('https://cartocollective.blob.core.windows.net/princeville/Arerial%20Photography/1999/AP1999/{z}/{x}/{y}.png', {
-maxZoom: 20,
-maxNativeZoom: 18,
-attribution: '1999 Princeville'
-});
+        maxZoom: 20,
+        maxNativeZoom: 18,
+        attribution: '1999 Princeville'
+        });
 
 var tile2002 = L.tileLayer('https://cartocollective.blob.core.windows.net/princeville/Arerial%20Photography/2002/AP2002/{z}/{x}/{y}.png', {
-maxZoom: 20,
-maxNativeZoom: 18,
-attribution: '2002 Princeville'
-});
+        maxZoom: 20,
+        maxNativeZoom: 18,
+        attribution: '2002 Princeville'
+        });
 
 var tile2008 = L.tileLayer('https://cartocollective.blob.core.windows.net/princeville/Arerial%20Photography/2008/AP2008/{z}/{x}/{y}.png', {
-maxZoom: 20,
-maxNativeZoom: 18,
-attribution: '2008 Princeville'
-});
+        maxZoom: 20,
+        maxNativeZoom: 18,
+        attribution: '2008 Princeville'
+        });
 
 var tile2013 = L.tileLayer('https://cartocollective.blob.core.windows.net/princeville/Arerial%20Photography/2013/AP2013/{z}/{x}/{y}.png', {
-maxZoom: 20,
-maxNativeZoom: 18,
-attribution: '2013 Princeville'
-});
+        maxZoom: 20,
+        maxNativeZoom: 18,
+        attribution: '2013 Princeville'
+        });
 
     // Define the Topo layers
 
     var tile1903 = L.tileLayer('https://cartocollective.blob.core.windows.net/princeville/Topo%20Maps/1903/Topo1903/{z}/{x}/{y}.png', {
         maxZoom: 20,
-        maxNativeZoom: 13,
+        maxNativeZoom: 18,
         attribution: '1903 Topo Map'
     });
 
     var tile1953 = L.tileLayer('https://cartocollective.blob.core.windows.net/princeville/Topo%20Maps/1953/Topo1953/{z}/{x}/{y}.png', {
         maxZoom: 20,
-        maxNativeZoom: 13,
+        maxNativeZoom: 18,
         attribution: '1953 Topo Map'
     });
 
     var tile1983 = L.tileLayer('https://cartocollective.blob.core.windows.net/princeville/Topo%20Maps/1983/Topo1983/{z}/{x}/{y}.png', {
         maxZoom: 20,
-        maxNativeZoom: 13,
+        maxNativeZoom: 18,
         attribution: '1983 Topo Map'
     });
     var elevationLayer = L.geoJSON(elevation, {
         style: {
-            color: 'blue', 
+            color: 'orange', 
             weight: 2,
             opacity: 1
         },
@@ -105,12 +108,14 @@ attribution: '2013 Princeville'
         },
       
     });
-    var parcelsLayer = L.geoJSON(parcels, {
-        style: {
-            color: 'blue', 
+
+    // Parcels 
+    // var parcelsLayer = L.geoJSON(parcels, {
+    //     style: {
+    //         color: 'black', 
           
-        },
-    })
+    //     },
+    // })
     
 
     // Create an object with the tile layers
@@ -124,39 +129,25 @@ attribution: '2013 Princeville'
         "1903 Topo Map": tile1903,
         "1953 Topo Map": tile1953,
         "1983 Topo Map": tile1983,
-        "Elevation": elevationLayer,
-        "Streams and Rivers": streamsLayer,
-        "Property Parcels": parcelsLayer
+
     };
 
-   
-
+    var overlayLayers = {
+        "Elevation": elevationLayer,
+        "Streams and Rivers": streamsLayer,
+        // "Property Parcels": parcelsLayer
+    };
 
     // Add the layer control to the map (including both sets of layers)
-    L.control.layers(baseLayers).addTo(map);
+    L.control.layers(baseLayers, overlayLayers).addTo(map);
 
 
     // Add a default layer to the map (1957 Aerial Photography)
     tile1957.addTo(map);
 
-    // Function to handle layer selection and sync the controls
-    function handleLayerSelection(selectedLayer, controls) {
-        for (var control of controls) {
-            control.removeLayer(selectedLayer);
-        }
-        selectedLayer.addTo(map);
-    }
 
-    // Listen for changes in the layer controls
-    map.on('overlayadd', function (e) {
-        handleLayerSelection(e.layer, [baseLayers]);
-    });
-
-    map.on('baselayerchange', function (e) {
-        handleLayerSelection(e.layer, [baseLayers ]);
-
-    });
  
+
 </script>
 </body>
 </html>
